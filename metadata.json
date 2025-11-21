@@ -1,0 +1,7 @@
+{
+  "name": "Pompeyo Express",
+  "description": "Professional taxi service website for Pompeyo Express, featuring Standard and Pink (Women only) fleets.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
