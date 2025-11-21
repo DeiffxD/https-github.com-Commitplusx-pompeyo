@@ -21,13 +21,14 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        // Update state based on intersection. 
-        // This allows re-animating when scrolling back up/down into view.
-        setIsVisible(entry.isIntersecting);
+        // Only update state if it actually changes to avoid unnecessary re-renders
+        if (entry.isIntersecting !== isVisible) {
+            setIsVisible(entry.isIntersecting);
+        }
       },
       {
         threshold: threshold,
-        rootMargin: '0px 0px -10% 0px', // Offset slightly so animation triggers when element is well inside viewport
+        rootMargin: '0px 0px -10% 0px',
       }
     );
 
@@ -40,26 +41,26 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
         observer.unobserve(ref.current);
       }
     };
-  }, [threshold]);
+  }, [threshold, isVisible]);
 
   const getTransformClass = () => {
-    if (isVisible) return 'translate-x-0 translate-y-0 opacity-100 blur-none scale-100';
+    if (isVisible) return 'translate-x-0 translate-y-0 opacity-100 scale-100';
     
-    // Add blur and slight scale down for a more premium "Apple-like" reveal effect
+    // Removed 'blur' filter for better performance on mobile devices ("Lag fix")
     switch (direction) {
-      case 'up': return 'translate-y-20 opacity-0 blur-sm scale-95';
-      case 'down': return '-translate-y-20 opacity-0 blur-sm scale-95';
-      case 'left': return '-translate-x-20 opacity-0 blur-sm scale-95';
-      case 'right': return 'translate-x-20 opacity-0 blur-sm scale-95';
-      default: return 'translate-y-20 opacity-0 blur-sm';
+      case 'up': return 'translate-y-20 opacity-0 scale-95';
+      case 'down': return '-translate-y-20 opacity-0 scale-95';
+      case 'left': return '-translate-x-20 opacity-0 scale-95';
+      case 'right': return 'translate-x-20 opacity-0 scale-95';
+      default: return 'translate-y-20 opacity-0';
     }
   };
 
   return (
     <div
       ref={ref}
-      // Using a custom cubic-bezier for a smoother, more natural "spring" feel
-      className={`transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform transform-gpu ${getTransformClass()} ${className}`}
+      // Changed 'transition-all' to specific properties to prevent layout thrashing and improve FPS
+      className={`transition-[transform,opacity] duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[transform,opacity] transform-gpu ${getTransformClass()} ${className}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
       {children}

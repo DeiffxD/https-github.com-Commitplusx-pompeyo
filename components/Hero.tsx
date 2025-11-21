@@ -1,16 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { ArrowRight, ShieldCheck, BadgeCheck, Car, Users, Sparkles } from 'lucide-react';
 import { ScrollReveal } from './ScrollReveal';
 
 export const Hero: React.FC = () => {
-  const [scrollY, setScrollY] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, fallbackSrc: string) => {
     e.currentTarget.onerror = null;
     e.currentTarget.src = fallbackSrc;
@@ -18,14 +10,13 @@ export const Hero: React.FC = () => {
 
   return (
     <section id="home" className="relative min-h-[100dvh] flex items-center pt-24 pb-12 md:pt-20 md:pb-0 overflow-hidden">
-      {/* Background Image with Overlay and Parallax Effect */}
+      {/* Background Image - Optimized: Removed JS Parallax for performance */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <img 
           src="/pompeyo-edificio.jpg" 
           onError={(e) => handleImageError(e, "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80")}
           alt="Base Pompeyo Express Comitán" 
-          className="w-full h-[120%] object-cover object-center will-change-transform"
-          style={{ transform: `translateY(${scrollY * 0.4}px)` }} // Moves slower than scroll for parallax
+          className="w-full h-[120%] object-cover object-center transform scale-105" 
         />
         {/* Darker gradient overlay to make glass cards pop */}
         <div className="absolute inset-0 bg-gradient-to-b from-gray-950/90 via-gray-900/85 to-gray-900/70 md:bg-gradient-to-r md:from-gray-950/95 md:via-gray-900/80 md:to-brand-orange/10"></div>

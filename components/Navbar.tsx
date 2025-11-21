@@ -7,11 +7,16 @@ export const Navbar: React.FC = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      const isScrolled = window.scrollY > 20;
+      // Only update state if it actually changes to prevent re-renders
+      if (isScrolled !== scrolled) {
+        setScrolled(isScrolled);
+      }
     };
-    window.addEventListener('scroll', handleScroll);
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [scrolled]);
 
   // Prevent body scroll when menu is open
   useEffect(() => {
